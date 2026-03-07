@@ -1,13 +1,13 @@
 import { io, Socket } from 'socket.io-client'
 
-// Change this URL to match your acl_controller server
-// const SERVER_URL = 'http://localhost:3000'
-const SERVER_URL = 'http://192.168.11.103:3000'
+// Same config as ACL_133_FRONT — socket server runs on port 5000
+const SERVER_URL = 'http://192.168.11.103:5000'
+
 const socket: Socket = io(SERVER_URL, {
-  transports: ['websocket'],
   autoConnect: true,
+  reconnection: true,
   reconnectionAttempts: Infinity,
-  reconnectionDelay: 2000,
+  reconnectionDelay: 3000,
 })
 
 export default socket
