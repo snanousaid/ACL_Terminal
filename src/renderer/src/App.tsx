@@ -51,8 +51,11 @@ function App(): JSX.Element {
         const ev: AccessEvent = typeof raw === 'string' ? JSON.parse(raw) : raw
         addLog('event', typeof raw === 'string' ? raw : JSON.stringify(ev, null, 2))
 
-        if (ev.eventType === 'ACCESS_GRANTED') setGrantedCount((c) => c + 1)
-        else                                   setDeniedCount((c) => c + 1)
+        // status boolean = source of truth (true=granted / false=denied)
+        // same logic as frontend green/red dot in events table
+        const isGranted = ev.status === true || ev.eventType === 'ACCESS_GRANTED'
+        if (isGranted) setGrantedCount((c) => c + 1)
+        else           setDeniedCount((c) => c + 1)
 
         setActiveEvent(ev)
         if (timerRef.current) clearTimeout(timerRef.current)

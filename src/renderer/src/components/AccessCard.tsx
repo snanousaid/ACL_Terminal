@@ -36,7 +36,9 @@ function getFullName(event: AccessEvent): string {
 }
 
 export default function AccessCard({ event }: Props): JSX.Element {
-  const granted = event.eventType === 'ACCESS_GRANTED'
+  // status boolean is the reliable field from backend (true=granted, false=denied)
+  // eventType is optional enrichment when available
+  const granted = event.status === true || event.eventType === 'ACCESS_GRANTED'
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
