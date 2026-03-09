@@ -92,7 +92,7 @@ function App(): JSX.Element {
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-950">
         <span className="font-bold text-lg tracking-tight text-foreground">
-          <span className="text-red-500">Vio</span>Watch
+          <span className="text-red-500">Vio</span><span className="text-zinc-200">Watch</span>
         </span>
         <span className="text-xs text-zinc-500">Moniteur d'accès</span>
       </div>
