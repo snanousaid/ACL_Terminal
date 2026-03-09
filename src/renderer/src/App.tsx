@@ -88,13 +88,13 @@ function App(): JSX.Element {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background overflow-hidden">
+    <div className="flex flex-col h-screen bg-zinc-950 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-background">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-950">
         <span className="font-bold text-lg tracking-tight text-foreground">
           <span className="text-red-500">Vio</span>Watch
         </span>
-        <span className="text-xs text-muted-foreground">Moniteur d'accès</span>
+        <span className="text-xs text-zinc-500">Moniteur d'accès</span>
       </div>
 
       {/* Log panel — controlled by SHOW_LOGS constant */}

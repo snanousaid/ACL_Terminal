@@ -48,23 +48,25 @@ export default function AccessCard({ event }: Props): JSX.Element {
     return () => clearTimeout(t)
   }, [event])
 
-  const bg       = granted ? 'bg-green-50 dark:bg-green-950'   : 'bg-red-50 dark:bg-red-950'
-  const ring     = granted ? 'ring-green-400'                   : 'ring-red-400'
-  const iconBg   = granted ? 'bg-green-100 dark:bg-green-900'  : 'bg-red-100 dark:bg-red-900'
-  const iconColor= granted ? 'text-green-600'                   : 'text-red-600'
-  const badgeBg  = granted ? 'bg-green-500'                     : 'bg-red-500'
-  const label    = granted ? 'ACCÈS ACCORDÉ'                    : 'ACCÈS REFUSÉ'
+  const ring      = granted ? 'ring-emerald-400'       : 'ring-rose-500'
+  const iconBg    = granted ? 'bg-emerald-900/60'      : 'bg-rose-900/60'
+  const iconColor = granted ? 'text-emerald-300'       : 'text-rose-300'
+  const badgeBg   = granted ? 'bg-emerald-600'         : 'bg-rose-600'
+  const label     = granted ? 'ACCÈS ACCORDÉ'            : 'ACCÈS REFUSÉ'
+  const doorColor = granted ? 'text-emerald-400/80'    : 'text-rose-400/80'
+  const timeColor = granted ? 'text-emerald-500/60'    : 'text-rose-500/60'
 
   return (
     <div
       className={`
         flex flex-col items-center justify-center h-full gap-6 px-6
+        bg-zinc-950
         transition-opacity duration-500
         ${visible ? 'opacity-100' : 'opacity-0'}
       `}
     >
       {/* Avatar circle */}
-      <div className={`w-36 h-36 rounded-full flex items-center justify-center ring-4 ${ring} ${iconBg} shadow-lg`}>
+      <div className={`w-36 h-36 rounded-full flex items-center justify-center ring-4 ${ring} ${iconBg} shadow-lg shadow-black/40`}>
         {granted
           ? <UserCheck size={72} className={iconColor} strokeWidth={1.5} />
           : <UserX     size={72} className={iconColor} strokeWidth={1.5} />
@@ -73,31 +75,24 @@ export default function AccessCard({ event }: Props): JSX.Element {
 
       {/* Name */}
       <div className="text-center">
-        <p className="text-3xl font-bold tracking-tight text-foreground">
+        <p className="text-3xl font-bold tracking-tight text-white">
           {getFullName(event)}
         </p>
-        {event.badge_id && event.badge_id !== '********' && (
-          <span className={`inline-block mt-2 px-3 py-0.5 rounded-full text-xs font-mono font-semibold tracking-wider
-            ${granted ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-                      : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'}`}>
-            {event.badge_id}
-          </span>
-        )}
       </div>
 
       {/* Door */}
-      <div className="flex items-center gap-2 text-muted-foreground">
+      <div className={`flex items-center gap-2 ${doorColor}`}>
         <DoorOpen size={18} />
         <span className="text-base">{event.doorName ?? event.reader_ ?? '—'}</span>
       </div>
 
       {/* GRANTED / DENIED badge */}
-      <div className={`px-8 py-3 rounded-full ${badgeBg} shadow-md`}>
+      <div className={`px-8 py-3 rounded-full ${badgeBg} shadow-md shadow-black/40`}>
         <p className="text-white text-xl font-extrabold tracking-widest">{label}</p>
       </div>
 
       {/* Time */}
-      <p className="text-muted-foreground text-sm">{formatTime(event.createdAt)}</p>
+      <p className={`text-sm ${timeColor}`}>{formatTime(event.createdAt)}</p>
     </div>
   )
 }

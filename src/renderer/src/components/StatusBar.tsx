@@ -7,7 +7,7 @@ export default function StatusBar({ connected }: Props): JSX.Element {
   const date = now.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
 
   return (
-    <div className="flex items-center justify-between px-4 py-2 border-t bg-background text-xs text-muted-foreground select-none">
+    <div className="flex items-center justify-between px-4 py-2 border-t border-zinc-800 bg-zinc-950 text-xs text-zinc-500 select-none">
       {/* Connection */}
       <div className="flex items-center gap-1.5">
         <span className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
