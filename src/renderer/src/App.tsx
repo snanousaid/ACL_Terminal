@@ -6,6 +6,7 @@ import StatusBar from './components/StatusBar'
 
 const DISPLAY_DURATION = 5000 // ms — durée d'affichage de la card avant retour idle
 const LOG_MAX = 20
+const SHOW_LOGS = false    // ← mettre true pour activer le panneau de logs
 
 interface LogEntry {
   time: string
@@ -93,16 +94,11 @@ function App(): JSX.Element {
         <span className="font-bold text-lg tracking-tight text-foreground">
           <span className="text-red-500">Vio</span>Watch
         </span>
-        <button
-          onClick={() => setShowLogs((v) => !v)}
-          className="text-xs px-2 py-1 rounded border border-border text-muted-foreground hover:bg-muted transition-colors"
-        >
-          {showLogs ? 'Masquer logs' : 'Voir logs'}
-        </button>
+        <span className="text-xs text-muted-foreground">Moniteur d'accès</span>
       </div>
 
-      {/* Log panel */}
-      {showLogs && (
+      {/* Log panel — controlled by SHOW_LOGS constant */}
+      {SHOW_LOGS && showLogs && (
         <div className="bg-zinc-950 text-xs font-mono border-b border-zinc-800 overflow-y-auto"
              style={{ height: '220px' }}>
           <div className="sticky top-0 bg-zinc-900 px-3 py-1 flex items-center justify-between border-b border-zinc-800">
@@ -129,12 +125,12 @@ function App(): JSX.Element {
       <div className="flex-1 overflow-hidden">
         {activeEvent
           ? <AccessCard event={activeEvent} />
-          : <IdleScreen connected={connected} />
+          : <IdleScreen />
         }
       </div>
 
       {/* Status bar */}
-      <StatusBar connected={connected} granted={grantedCount} denied={deniedCount} />
+      <StatusBar connected={connected} />
     </div>
   )
 }

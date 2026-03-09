@@ -77,7 +77,11 @@ export default function AccessCard({ event }: Props): JSX.Element {
           {getFullName(event)}
         </p>
         {event.badge_id && event.badge_id !== '********' && (
-          <p className="text-sm text-muted-foreground mt-1">Badge: {event.badge_id}</p>
+          <span className={`inline-block mt-2 px-3 py-0.5 rounded-full text-xs font-mono font-semibold tracking-wider
+            ${granted ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                      : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'}`}>
+            {event.badge_id}
+          </span>
         )}
       </div>
 
