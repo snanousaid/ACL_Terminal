@@ -94,7 +94,7 @@ function App(): JSX.Element {
         <span className="font-bold text-lg tracking-tight text-foreground">
           <span className="text-red-500">Vio</span><span className="text-zinc-200">Watch</span>
         </span>
-        <span className="text-xs text-zinc-500">Moniteur d'accès</span>
+        <span className="text-xs text-zinc-200">Moniteur d'accès</span>
       </div>
 
       {/* Log panel — controlled by SHOW_LOGS constant */}
