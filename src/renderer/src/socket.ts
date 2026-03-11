@@ -1,7 +1,6 @@
 import { io, Socket } from 'socket.io-client'
 
-// Same config as ACL_133_FRONT — socket server runs on port 5000
-const SERVER_URL = 'http://192.168.10.89:5000'
+const SERVER_URL = 'http://localhost:5000'
 
 const socket: Socket = io(SERVER_URL, {
   transports: ['websocket'],   // skip XHR polling — backend is standalone WS server
