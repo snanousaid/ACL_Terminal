@@ -6,8 +6,8 @@ function createWindow(): void {
   // Create the browser window.
  
   const mainWindow = new BrowserWindow({
-    width: 520,
-    height: 680,
+    width: 1024,
+    height: 600,
     show: true,
     autoHideMenuBar: true,
     title: 'VioWatch',
