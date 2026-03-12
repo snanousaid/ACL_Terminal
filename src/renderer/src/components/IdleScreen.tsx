@@ -1,39 +1,36 @@
-import { BadgeCheck } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { CreditCard, Wifi } from 'lucide-react'
 
 export default function IdleScreen(): JSX.Element {
-
   return (
-    <div className="flex flex-col items-center justify-center h-full bg-zinc-950 gap-8">
-      <div className="relative w-64 h-48 flex items-center justify-center mt-10">
-        {/* Ombre animée sous le lecteur */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-8 rounded-full bg-gradient-to-r from-blue-400/30 via-violet-500/30 to-blue-400/30 animate-shadow-pulse z-0"></div>
-      {/* Lecteur RFID */}
-      <div className="absolute bottom-0 w-32 h-6 bg-gray-400 dark:bg-gray-600 rounded-t-lg z-10"></div>
-      <div className="absolute bottom-6 w-24 h-2 bg-blue-500 mx-auto rounded-t-sm"></div>
+    <div className="flex flex-col items-center justify-center h-full select-none animate-in fade-in zoom-in duration-500">
 
-      {/* Ondes électromagnétiques dégradées */}
-      <div className="absolute w-40 h-40 rounded-full border-2 animate-rfid-pulse-gradient-1 opacity-10 border-r-0 border-b-0"></div>
-      <div className="absolute w-48 h-48 rounded-full border-2 animate-rfid-pulse-gradient-2 opacity-60 border-l-0 border-t-0"></div>
-      <div className="absolute w-56 h-56 rounded-full border-2 animate-rfid-pulse-gradient-3 opacity-50 border-b-0 border-l-0"></div>
+      <div className="text-slate-500 text-sm tracking-[0.2em] uppercase mb-2">Contrôle d'accès</div>
+      <div className="text-slate-300 text-xl font-light mb-16">SYSTÈME SÉCURISÉ</div>
 
-      {/* Scan beam */}
-      <div className="absolute left-1/2 top-0 -translate-x-1/2 w-20 h-16 pointer-events-none z-30 overflow-hidden">
-        <div className="absolute left-0 w-full h-2 bg-gradient-to-b from-blue-200/80 via-blue-400/60 to-transparent animate-scan-beam rounded-full"></div>
+      <div className="relative flex flex-col items-center justify-center w-64 h-64 mb-12">
+        {/* Cercles animés ping */}
+        <div className="absolute inset-0 border border-blue-500/20 rounded-full animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
+        <div className="absolute inset-4 border border-blue-500/10 rounded-full animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite_1s]"></div>
+
+        {/* Socle du lecteur */}
+        <div className="absolute bottom-10 w-40 h-12 bg-slate-800/50 rounded-xl border border-slate-700/50 flex items-end justify-center pb-2"
+          style={{ boxShadow: '0 0 30px rgba(59,130,246,0.15)' }}>
+          <div className="w-24 h-1 bg-blue-500/50 rounded-full blur-[2px]"></div>
+        </div>
+
+        {/* Icône Carte flottante */}
+        <div className="relative z-10 mb-8 text-slate-300 animate-[bounce_4s_ease-in-out_infinite]">
+          <CreditCard size={80} strokeWidth={1} className="fill-slate-800" />
+          <Wifi size={32} className="absolute -top-6 left-1/2 -translate-x-1/2 text-blue-400 rotate-90" />
+        </div>
       </div>
 
-      {/* Carte RFID avec glow et rotation */}
-      <div className="absolute w-24 h-16 bg-gradient-to-br from-blue-100 to-blue-300 dark:from-blue-800 rounded-md shadow-md animate-rfid-float-glow z-20">
-        <div className="absolute top-1 left-1 w-6 h-1 bg-gray-500 rounded-sm"></div>
-        <div className="absolute top-3 left-1 w-4 h-1 bg-gray-500 rounded-sm"></div>
-        <div className="absolute top-1 right-1 w-3 h-3 rounded-full bg-orange-600"></div>
+      <div className="text-slate-300 tracking-[0.15em] font-medium flex items-center gap-3">
+        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+        APPROCHER VOTRE BADGE
+        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
       </div>
+
     </div>
-    <p className="text-base font-semibold tracking-[0.2em] uppercase text-zinc-200 flex items-center">
-      En attente de badge
-      <span className="dot-ellipsis ml-1">&nbsp;</span>
-    </p>
-    {/* Texte animé supprimé */}
-    </div>
-    )
+  )
 }

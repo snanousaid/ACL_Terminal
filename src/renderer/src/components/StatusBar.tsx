@@ -1,26 +1,43 @@
+import { useEffect, useState } from 'react'
+import { Circle } from 'lucide-react'
+
 interface Props {
   connected: boolean
 }
 
 export default function StatusBar({ connected }: Props): JSX.Element {
-  const now = new Date()
-  const date = now.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })
-  const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const [now, setNow] = useState(new Date())
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  const date = now.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).replace('.', '')
+  const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 
   return (
-    <div className="flex items-center justify-between px-4 py-2 border-t border-zinc-800 bg-zinc-900 select-none">
-      {/* Connection */}
-      <div className={`flex items-center gap-2 text-xs font-semibold tracking-wide uppercase
-        ${connected ? 'text-emerald-400' : 'text-red-400'}`}>
-        <span className={`w-2 h-2 rounded-full ${connected ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
-        {connected ? 'Connecté' : 'Déconnecté'}
+    <footer className="flex items-center justify-between px-8 h-24 border-t border-slate-800/80 bg-slate-950 z-10 shadow-[0_-10px_30px_rgba(0,0,0,0.2)] select-none">
+      {/* Statut connexion */}
+      <div className={`flex items-center gap-3 text-sm font-bold tracking-wider ${connected ? 'text-emerald-500' : 'text-red-400'}`}>
+        <Circle
+          size={12}
+          className={connected ? 'fill-emerald-500 animate-pulse' : 'fill-red-400'}
+          style={connected ? { filter: 'drop-shadow(0 0 4px #10b981)' } : {}}
+        />
+        {connected ? 'CONNECTÉ' : 'DÉCONNECTÉ'}
       </div>
 
-      {/* Date + Time */}
-      <div className="flex items-center gap-3 text-xs">
-        <span className="text-zinc-400 font-medium">{date}</span>
-        <span className="text-zinc-300 font-bold tabular-nums">{time}</span>
+      {/* Date + Heure */}
+      <div className="flex items-center gap-4 bg-slate-900/80 px-5 py-3 rounded-xl border border-slate-800 shadow-inner">
+        <div className="text-slate-300 text-base font-medium capitalize tracking-wide">
+          {date}
+        </div>
+        <div className="w-px h-6 bg-slate-700"></div>
+        <div className="text-white text-xl font-bold font-mono tracking-widest">
+          {time}
+        </div>
       </div>
-    </div>
+    </footer>
   )
 }

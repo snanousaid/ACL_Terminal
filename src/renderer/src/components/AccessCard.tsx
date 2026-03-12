@@ -1,5 +1,4 @@
-import { UserCheck, UserX, DoorOpen } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { UserCheck, UserX, DoorClosed } from 'lucide-react'
 
 export interface AccessEvent {
   id?: string
@@ -36,63 +35,53 @@ function getFullName(event: AccessEvent): string {
 }
 
 export default function AccessCard({ event }: Props): JSX.Element {
-  // status boolean is the reliable field from backend (true=granted, false=denied)
-  // eventType is optional enrichment when available
   const granted = event.status === true || event.eventType === 'ACCESS_GRANTED'
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    // trigger fade-in
-    setVisible(false)
-    const t = setTimeout(() => setVisible(true), 30)
-    return () => clearTimeout(t)
-  }, [event])
-
-  const ring      = granted ? 'ring-emerald-400'       : 'ring-rose-500'
-  const iconBg    = granted ? 'bg-emerald-900/60'      : 'bg-rose-900/60'
-  const iconColor = granted ? 'text-emerald-300'       : 'text-rose-300'
-  const badgeBg   = granted ? 'bg-emerald-600'         : 'bg-rose-600'
-  const label     = granted ? 'ACCÈS ACCORDÉ'            : 'ACCÈS REFUSÉ'
-  const doorColor = granted ? 'text-emerald-400/80'    : 'text-rose-400/80'
-  const timeColor = granted ? 'text-emerald-500/60'    : 'text-rose-500/60'
 
   return (
-    <div
-      className={`
-        flex flex-col items-center justify-center h-full gap-6 px-6
-        bg-zinc-950
-        transition-opacity duration-500
-        ${visible ? 'opacity-100' : 'opacity-0'}
-      `}
-    >
-      {/* Avatar circle */}
-      <div className={`w-36 h-36 rounded-full flex items-center justify-center ring-4 ${ring} ${iconBg} shadow-lg shadow-black/40`}>
-        {granted
-          ? <UserCheck size={72} className={iconColor} strokeWidth={1.5} />
-          : <UserX     size={72} className={iconColor} strokeWidth={1.5} />
-        }
-      </div>
+    <div className="flex flex-col items-center justify-center h-full px-6">
+      {granted ? (
+        <div className="w-full max-w-md bg-emerald-950/20 border border-emerald-500/30 rounded-3xl p-10 flex flex-col items-center shadow-[0_0_50px_rgba(16,185,129,0.1)] animate-in slide-in-from-bottom-8 fade-in duration-500">
+          <div className="w-24 h-24 rounded-full bg-emerald-500/10 border-2 border-emerald-500 flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+            <UserCheck size={48} className="text-emerald-400" />
+          </div>
 
-      {/* Name */}
-      <div className="text-center">
-        <p className="text-3xl font-bold tracking-tight text-white">
-          {getFullName(event)}
-        </p>
-      </div>
+          <h2 className="text-3xl font-bold text-white mb-8">{getFullName(event)}</h2>
 
-      {/* Door */}
-      <div className={`flex items-center gap-2 ${doorColor}`}>
-        <DoorOpen size={18} />
-        <span className="text-base">{event.doorName ?? event.reader_ ?? '—'}</span>
-      </div>
+          <div className="bg-emerald-500 text-white px-8 py-4 rounded-full font-bold tracking-[0.1em] text-xl mb-8 w-full text-center shadow-[0_0_20px_rgba(16,185,129,0.5)]">
+            ACCÈS ACCORDÉ
+          </div>
 
-      {/* GRANTED / DENIED badge */}
-      <div className={`px-8 py-3 rounded-full ${badgeBg} shadow-md shadow-black/40`}>
-        <p className="text-white text-xl font-extrabold tracking-widest">{label}</p>
-      </div>
+          <div className="flex items-center gap-6 text-emerald-400/80 bg-emerald-950/40 px-6 py-3 rounded-2xl border border-emerald-900/50">
+            <div className="flex items-center gap-2">
+              <DoorClosed size={18} />
+              <span>{event.doorName ?? event.reader_ ?? '—'}</span>
+            </div>
+            <div className="w-px h-4 bg-emerald-800"></div>
+            <span className="font-mono text-sm">{formatTime(event.createdAt)}</span>
+          </div>
+        </div>
+      ) : (
+        <div className="w-full max-w-md bg-rose-950/20 border border-rose-500/30 rounded-3xl p-10 flex flex-col items-center shadow-[0_0_50px_rgba(225,29,72,0.1)] animate-in slide-in-from-bottom-8 fade-in duration-500">
+          <div className="w-24 h-24 rounded-full bg-rose-500/10 border-2 border-rose-500 flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(225,29,72,0.3)]">
+            <UserX size={48} className="text-rose-400" />
+          </div>
 
-      {/* Time */}
-      <p className={`text-sm ${timeColor}`}>{formatTime(event.createdAt)}</p>
+          <h2 className="text-3xl font-bold text-white mb-8">{getFullName(event)}</h2>
+
+          <div className="bg-rose-600 text-white px-8 py-4 rounded-full font-bold tracking-[0.1em] text-xl mb-8 w-full text-center shadow-[0_0_20px_rgba(225,29,72,0.5)]">
+            ACCÈS REFUSÉ
+          </div>
+
+          <div className="flex items-center gap-6 text-rose-400/80 bg-rose-950/40 px-6 py-3 rounded-2xl border border-rose-900/50">
+            <div className="flex items-center gap-2">
+              <DoorClosed size={18} />
+              <span>{event.doorName ?? event.reader_ ?? '—'}</span>
+            </div>
+            <div className="w-px h-4 bg-rose-800"></div>
+            <span className="font-mono text-sm">{formatTime(event.createdAt)}</span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

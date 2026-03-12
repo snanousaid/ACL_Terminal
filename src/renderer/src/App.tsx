@@ -88,14 +88,20 @@ function App(): JSX.Element {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-950 overflow-hidden">
+    <div className="flex flex-col h-screen bg-slate-950 text-slate-100 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-950">
-        <span className="font-bold text-lg tracking-tight text-foreground">
-          <span className="text-red-500">Vio</span><span className="text-zinc-200">Watch</span>
-        </span>
-        <span className="text-xs text-zinc-200">Moniteur d'accès</span>
-      </div>
+      <header className="flex items-center justify-between px-6 py-4 border-b border-slate-800/60 bg-slate-950/50 backdrop-blur-sm z-10">
+        <div className="flex items-center gap-3">
+          <div className="w-3 h-3 rounded-full bg-blue-500" style={{ boxShadow: '0 0 10px rgba(59,130,246,0.6)' }} />
+          <h1 className="text-xl font-bold tracking-tight">
+            <span className="text-blue-500">Vio</span><span className="text-white">Watch</span>
+          </h1>
+        </div>
+        <div className="flex items-center gap-2 text-slate-500">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+          <span className="text-xs font-semibold tracking-[0.2em] uppercase">Moniteur d'accès</span>
+        </div>
+      </header>
 
       {/* Log panel — controlled by SHOW_LOGS constant */}
       {SHOW_LOGS && showLogs && (
