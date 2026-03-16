@@ -1,0 +1,12 @@
+[Unit]
+Description=Nextronic VioWatch
+After=multi-user.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/nextronic/viogris/acl_viowatch
+ExecStart=/home/nextronic/viogris/acl_viowatch/viowatch.sh
+
+[Install]
+WantedBy=multi-user.target
