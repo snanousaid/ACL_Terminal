@@ -264,12 +264,27 @@ function WifiTab(): JSX.Element {
 
       {/* Formulaire connexion */}
       <div className="border-t border-slate-800 pt-4 space-y-3">
-        <KbInput
-          label="SSID"
-          value={selected}
-          onChange={setSelected}
-          placeholder="Nom du réseau"
-        />
+        {/* SSID — lecture seule, rempli par la sélection dans la liste */}
+        <div>
+          <label className="block text-xs text-slate-500 mb-1">SSID sélectionné</label>
+          <div className="w-full bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 min-h-[38px] flex items-center gap-2">
+            {selected ? (
+              <>
+                <WifiSmallIcon />
+                <span className="text-sm font-mono text-white flex-1 truncate">{selected}</span>
+                <button
+                  onClick={() => { setSelected(''); setResult(null) }}
+                  className="text-slate-500 hover:text-slate-300 transition-colors text-xs"
+                  title="Désélectionner"
+                >
+                  ✕
+                </button>
+              </>
+            ) : (
+              <span className="text-slate-600 text-sm">Sélectionnez un réseau dans la liste</span>
+            )}
+          </div>
+        </div>
         <KbInput
           label="Mot de passe"
           value={password}
