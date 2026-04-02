@@ -1,3 +1,4 @@
+import 'react-simple-keyboard/build/css/index.css'
 import './assets/main.css'
 
 import React from 'react'

@@ -134,6 +134,59 @@
   60% { content: '..'; }
   80%, 100% { content: '...'; }
 }
+/* ── react-simple-keyboard : thème dark VioWatch ───────────── */
+.vio-keyboard.hg-theme-default {
+  background-color: #0f172a !important;
+  border-top: 1px solid #334155 !important;
+  border-radius: 0 !important;
+  padding: 6px 6px 12px !important;
+  font-family: inherit !important;
+  box-shadow: none !important;
+}
+.vio-keyboard.hg-theme-default .hg-button {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+  border: none !important;
+  border-bottom: 2px solid #1e293b !important;
+  border-radius: 8px !important;
+  height: 44px !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  transition: background-color 0.1s !important;
+}
+.vio-keyboard.hg-theme-default .hg-button:active,
+.vio-keyboard.hg-theme-default .hg-button.hg-activeButton {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+/* Touches fonctionnelles */
+.vio-keyboard.hg-theme-default .hg-button[data-skbtn="{bksp}"],
+.vio-keyboard.hg-theme-default .hg-button[data-skbtn="{shift}"],
+.vio-keyboard.hg-theme-default .hg-button[data-skbtn="{numbers}"],
+.vio-keyboard.hg-theme-default .hg-button[data-skbtn="{abc}"] {
+  background-color: #475569 !important;
+  color: #cbd5e1 !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+}
+.vio-keyboard.hg-theme-default .hg-button[data-skbtn="{space}"] {
+  background-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+.vio-keyboard.hg-theme-default .hg-button[data-skbtn="{enter}"] {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+.vio-keyboard.hg-theme-default .hg-row {
+  gap: 5px !important;
+  margin-bottom: 5px !important;
+  justify-content: center !important;
+}
+/* ─────────────────────────────────────────────────────────── */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
