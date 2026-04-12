@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { UserCheck, UserX, DoorClosed } from 'lucide-react'
+import { API_BASE } from '../socket'
 
 export interface AccessEvent {
   id?: string
@@ -12,9 +14,10 @@ export interface AccessEvent {
   readerName?: string | null
   createdAt?: string
   user?: {
+    id?: string
     first_name?: string
     last_name?: string
-    photo?: string | null
+    image?: string | null
   } | null
 }
 
@@ -34,6 +37,73 @@ function getFullName(event: AccessEvent): string {
   return 'Anonyme'
 }
 
+function getInitials(event: AccessEvent): string {
+  const fn = event.user?.first_name?.trim()
+  const ln = event.user?.last_name?.trim()
+  return `${(fn || '')[0] ?? ''}${(ln || '')[0] ?? ''}`.toUpperCase() || '?'
+}
+
+function getImageUrl(event: AccessEvent): string | null {
+  const userId = event.user?.id ?? event.userId
+  if (!userId || !event.user?.image) return null
+  return `${API_BASE}/api/v2/users/${userId}/image`
+}
+
+function Avatar({
+  event,
+  granted
+}: {
+  event: AccessEvent
+  granted: boolean
+}): JSX.Element {
+  const [imgError, setImgError] = useState(false)
+  const imageUrl = getImageUrl(event)
+  const color = granted ? 'emerald' : 'rose'
+
+  const wrapClass = `w-24 h-24 rounded-full border-2 flex items-center justify-center mb-6 overflow-hidden ${
+    granted
+      ? 'border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+      : 'border-rose-500 shadow-[0_0_20px_rgba(225,29,72,0.3)]'
+  }`
+
+  if (imageUrl && !imgError) {
+    return (
+      <div className={wrapClass}>
+        <img
+          src={imageUrl}
+          alt="avatar"
+          className="w-full h-full object-cover"
+          onError={() => setImgError(true)}
+        />
+      </div>
+    )
+  }
+
+  return (
+    <div
+      className={`${wrapClass} ${
+        granted ? 'bg-emerald-500/10' : 'bg-rose-500/10'
+      }`}
+    >
+      {imageUrl === null ? (
+        granted ? (
+          <UserCheck size={48} className="text-emerald-400" />
+        ) : (
+          <UserX size={48} className="text-rose-400" />
+        )
+      ) : (
+        <span
+          className={`text-2xl font-bold ${
+            granted ? 'text-emerald-400' : 'text-rose-400'
+          }`}
+        >
+          {getInitials(event)}
+        </span>
+      )}
+    </div>
+  )
+}
+
 export default function AccessCard({ event }: Props): JSX.Element {
   const granted = event.status === true || event.eventType === 'ACCESS_GRANTED'
 
@@ -41,9 +111,7 @@ export default function AccessCard({ event }: Props): JSX.Element {
     <div className="flex flex-col items-center justify-center h-full px-6">
       {granted ? (
         <div className="w-full max-w-md bg-emerald-950/20 border border-emerald-500/30 rounded-3xl p-10 flex flex-col items-center shadow-[0_0_50px_rgba(16,185,129,0.1)] animate-in slide-in-from-bottom-8 fade-in duration-500">
-          <div className="w-24 h-24 rounded-full bg-emerald-500/10 border-2 border-emerald-500 flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-            <UserCheck size={48} className="text-emerald-400" />
-          </div>
+          <Avatar event={event} granted={true} />
 
           <h2 className="text-3xl font-bold text-white mb-8">{getFullName(event)}</h2>
 
@@ -62,9 +130,7 @@ export default function AccessCard({ event }: Props): JSX.Element {
         </div>
       ) : (
         <div className="w-full max-w-md bg-rose-950/20 border border-rose-500/30 rounded-3xl p-10 flex flex-col items-center shadow-[0_0_50px_rgba(225,29,72,0.1)] animate-in slide-in-from-bottom-8 fade-in duration-500">
-          <div className="w-24 h-24 rounded-full bg-rose-500/10 border-2 border-rose-500 flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(225,29,72,0.3)]">
-            <UserX size={48} className="text-rose-400" />
-          </div>
+          <Avatar event={event} granted={false} />
 
           <h2 className="text-3xl font-bold text-white mb-8">{getFullName(event)}</h2>
 
