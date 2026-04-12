@@ -5,9 +5,12 @@ export interface NetworkInfo {
   wifiIP: string
   wifiMac: string
   wifiInterface: string
+  wifiSsid: string | null
+  wifiMode: string | null
   ethernetIP: string
   ethernetMac: string
   ethernetInterface: string
+  ethernetMode: string | null
 }
 
 export interface WifiNetwork {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import type { NetworkInfo, WifiNetwork } from '../../../preload/index.d'
 import KbInput from './KbInput'
 
@@ -164,6 +164,7 @@ function WifiTab(): JSX.Element {
   const [scanning, setScanning] = useState(false)
   const [scanError, setScanError] = useState('')
   const [selected, setSelected] = useState('')
+  const [connectedSsid, setConnectedSsid] = useState<string | null>(null)
   const [password, setPassword] = useState('')
   const [mode, setMode] = useState<'dhcp' | 'static'>('dhcp')
   const [ip, setIp] = useState('')
@@ -172,6 +173,18 @@ function WifiTab(): JSX.Element {
   const [dns, setDns] = useState('')
   const [applying, setApplying] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; msg: string } | null>(null)
+
+  useEffect(() => {
+    window.api.getNetworkInfo().then((info) => {
+      if (info.wifiSsid) {
+        setConnectedSsid(info.wifiSsid)
+        setSelected(info.wifiSsid)
+      }
+      if (info.wifiMode) {
+        setMode(info.wifiMode === 'manual' ? 'static' : 'dhcp')
+      }
+    }).catch(() => null)
+  }, [])
 
   const scan = (): void => {
     setScanning(true)
@@ -245,6 +258,11 @@ function WifiTab(): JSX.Element {
             >
               <WifiSmallIcon />
               <span className="flex-1 text-sm text-white truncate">{n.ssid}</span>
+              {connectedSsid === n.ssid && (
+                <span className="text-[10px] font-bold text-green-400 bg-green-500/15 px-1.5 py-0.5 rounded">
+                  Connecté
+                </span>
+              )}
               <SignalBar signal={n.signal} />
               {n.security !== '--' && (
                 <span className="text-[10px] text-slate-400 bg-slate-700 px-1.5 py-0.5 rounded">
@@ -347,6 +365,9 @@ function EthernetTab({ open }: { open: boolean }): JSX.Element {
       .getNetworkInfo()
       .then((info) => {
         if (info.ethernetInterface) setIface(info.ethernetInterface)
+        if (info.ethernetMode) {
+          setMode(info.ethernetMode === 'manual' ? 'static' : 'dhcp')
+        }
       })
       .catch(() => null)
   }, [open])
@@ -514,7 +535,7 @@ function Section({
   children,
 }: {
   label: string
-  children: JSX.Element | JSX.Element[]
+  children: React.ReactNode
 }): JSX.Element {
   return (
     <div className="border-t border-slate-800 pt-4">
