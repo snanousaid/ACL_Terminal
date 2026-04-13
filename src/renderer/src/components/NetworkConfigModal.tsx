@@ -173,6 +173,7 @@ function WifiTab(): JSX.Element {
   const [dns, setDns] = useState('')
   const [applying, setApplying] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; msg: string } | null>(null)
+  const [currentMode, setCurrentMode] = useState<string | null>(null)
 
   useEffect(() => {
     window.api.getNetworkInfo().then((info) => {
@@ -181,9 +182,12 @@ function WifiTab(): JSX.Element {
         setSelected(info.wifiSsid)
       }
       if (info.wifiMode) {
-        setMode(info.wifiMode === 'manual' ? 'static' : 'dhcp')
+        const m = info.wifiMode === 'manual' ? 'static' : 'dhcp'
+        setMode(m)
+        setCurrentMode(m)
       }
     }).catch(() => null)
+    scan()
   }, [])
 
   const scan = (): void => {
@@ -313,6 +317,13 @@ function WifiTab(): JSX.Element {
 
         <ModeToggle mode={mode} onChange={setMode} />
 
+        {currentMode && (
+          <div className="flex items-center gap-2 text-[11px] text-slate-400">
+            <span className={`w-1.5 h-1.5 rounded-full ${currentMode === 'dhcp' ? 'bg-green-400' : 'bg-amber-400'}`} />
+            Mode actuel : <span className="font-semibold text-slate-300">{currentMode === 'dhcp' ? 'DHCP (auto)' : 'IP Statique'}</span>
+          </div>
+        )}
+
         {mode === 'static' && (
           <StaticFields
             ip={ip}
@@ -352,6 +363,7 @@ function WifiTab(): JSX.Element {
 function EthernetTab({ open }: { open: boolean }): JSX.Element {
   const [iface, setIface] = useState('')
   const [mode, setMode] = useState<'dhcp' | 'static'>('dhcp')
+  const [currentMode, setCurrentMode] = useState<string | null>(null)
   const [ip, setIp] = useState('')
   const [prefix, setPrefix] = useState('24')
   const [gateway, setGateway] = useState('')
@@ -366,7 +378,9 @@ function EthernetTab({ open }: { open: boolean }): JSX.Element {
       .then((info) => {
         if (info.ethernetInterface) setIface(info.ethernetInterface)
         if (info.ethernetMode) {
-          setMode(info.ethernetMode === 'manual' ? 'static' : 'dhcp')
+          const m = info.ethernetMode === 'manual' ? 'static' : 'dhcp'
+          setMode(m)
+          setCurrentMode(m)
         }
       })
       .catch(() => null)
@@ -397,6 +411,13 @@ function EthernetTab({ open }: { open: boolean }): JSX.Element {
       />
 
       <ModeToggle mode={mode} onChange={setMode} />
+
+      {currentMode && (
+        <div className="flex items-center gap-2 text-[11px] text-slate-400">
+          <span className={`w-1.5 h-1.5 rounded-full ${currentMode === 'dhcp' ? 'bg-green-400' : 'bg-amber-400'}`} />
+          Mode actuel : <span className="font-semibold text-slate-300">{currentMode === 'dhcp' ? 'DHCP (auto)' : 'IP Statique'}</span>
+        </div>
+      )}
 
       {mode === 'static' && (
         <StaticFields
