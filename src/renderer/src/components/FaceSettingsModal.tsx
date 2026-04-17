@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ScanFace, Users, Plus, Trash2, Power, RefreshCw, X, Check, AlertCircle } from 'lucide-react'
 import { FACE_API_BASE } from '../socket'
 import VideoStream from './VideoStream'
+import RoiOverlay from './RoiOverlay'
 import KbInput from './KbInput'
 
 interface Props {
@@ -384,6 +385,7 @@ function EnrollTab({ onDone }: { onDone: () => void }): JSX.Element {
           {/* Stream live — l'utilisateur se voit */}
           <div className="relative">
             <VideoStream className="w-full aspect-[4/3] border border-slate-700" />
+            <RoiOverlay />
             {/* Hint pose courante sur le stream */}
             <div className="absolute left-3 bottom-3 right-3 flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950/80 backdrop-blur-sm border border-slate-700 text-[10px] font-semibold text-slate-300">
