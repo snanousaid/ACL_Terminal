@@ -3,7 +3,8 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
-const API_BASE = 'http://localhost:80/api/v2'
+// const API_BASE = 'http://localhost:80/api/v2'
+const API_BASE = 'http://192.168.10.132:80/api/v2'
 
 function apiGet(path: string): Promise<unknown> {
   return new Promise((resolve, reject) => {

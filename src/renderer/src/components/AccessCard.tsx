@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { UserCheck, UserX, DoorClosed } from 'lucide-react'
+import { UserCheck, UserX, DoorClosed, CreditCard, ScanFace, Fingerprint } from 'lucide-react'
 import { API_BASE } from '../socket'
+
+export type AccessSource = 'badge' | 'face' | 'fingerprint'
 
 export interface AccessEvent {
   id?: string
@@ -13,12 +15,28 @@ export interface AccessEvent {
   doorName?: string | null
   readerName?: string | null
   createdAt?: string
+  /** Source de l'événement : badge | face | fingerprint (défaut = badge) */
+  source?: AccessSource
+  /** Score de confiance (0-1) pour sources biométriques */
+  score?: number
   user?: {
     id?: string
     first_name?: string
     last_name?: string
     image?: string | null
   } | null
+}
+
+const SOURCE_LABEL: Record<AccessSource, string> = {
+  badge: 'Badge',
+  face: 'Reconnaissance faciale',
+  fingerprint: 'Empreinte digitale',
+}
+
+function SourceIcon({ source, size = 14 }: { source: AccessSource; size?: number }): JSX.Element {
+  if (source === 'face') return <ScanFace size={size} />
+  if (source === 'fingerprint') return <Fingerprint size={size} />
+  return <CreditCard size={size} />
 }
 
 interface Props {
@@ -106,48 +124,62 @@ function Avatar({
 
 export default function AccessCard({ event }: Props): JSX.Element {
   const granted = event.status === true || event.eventType === 'ACCESS_GRANTED'
+  const source: AccessSource = event.source ?? 'badge'
+  const sourceLabel = SOURCE_LABEL[source]
 
   return (
     <div className="flex flex-col items-center justify-center h-full px-6">
-      {granted ? (
-        <div className="w-full max-w-md bg-emerald-950/20 border border-emerald-500/30 rounded-3xl p-10 flex flex-col items-center shadow-[0_0_50px_rgba(16,185,129,0.1)] animate-in slide-in-from-bottom-8 fade-in duration-500">
-          <Avatar event={event} granted={true} />
+      <div
+        className={`w-full max-w-md ${
+          granted
+            ? 'bg-emerald-950/20 border-emerald-500/30 shadow-[0_0_50px_rgba(16,185,129,0.1)]'
+            : 'bg-rose-950/20 border-rose-500/30 shadow-[0_0_50px_rgba(225,29,72,0.1)]'
+        } border rounded-3xl p-10 flex flex-col items-center animate-in slide-in-from-bottom-8 fade-in duration-500`}
+      >
+        <Avatar event={event} granted={granted} />
 
-          <h2 className="text-3xl font-bold text-white mb-8">{getFullName(event)}</h2>
+        <h2 className="text-3xl font-bold text-white mb-2">{getFullName(event)}</h2>
 
-          <div className="bg-emerald-500 text-white px-8 py-4 rounded-full font-bold tracking-[0.1em] text-xl mb-8 w-full text-center shadow-[0_0_20px_rgba(16,185,129,0.5)]">
-            ACCÈS ACCORDÉ
-          </div>
-
-          <div className="flex items-center gap-6 text-emerald-400/80 bg-emerald-950/40 px-6 py-3 rounded-2xl border border-emerald-900/50">
-            <div className="flex items-center gap-2">
-              <DoorClosed size={18} />
-              <span>{event.doorName ?? event.reader_ ?? '—'}</span>
-            </div>
-            <div className="w-px h-4 bg-emerald-800"></div>
-            <span className="font-mono text-sm">{formatTime(event.createdAt)}</span>
-          </div>
+        {/* Badge source */}
+        <div
+          className={`flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider mb-6 px-3 py-1 rounded-full ${
+            granted
+              ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30'
+              : 'bg-rose-500/10 text-rose-300 border border-rose-500/30'
+          }`}
+        >
+          <SourceIcon source={source} />
+          <span>{sourceLabel}</span>
+          {event.score !== undefined && source !== 'badge' && (
+            <span className="font-mono ml-1 opacity-80">· {(event.score * 100).toFixed(0)}%</span>
+          )}
         </div>
-      ) : (
-        <div className="w-full max-w-md bg-rose-950/20 border border-rose-500/30 rounded-3xl p-10 flex flex-col items-center shadow-[0_0_50px_rgba(225,29,72,0.1)] animate-in slide-in-from-bottom-8 fade-in duration-500">
-          <Avatar event={event} granted={false} />
 
-          <h2 className="text-3xl font-bold text-white mb-8">{getFullName(event)}</h2>
-
-          <div className="bg-rose-600 text-white px-8 py-4 rounded-full font-bold tracking-[0.1em] text-xl mb-8 w-full text-center shadow-[0_0_20px_rgba(225,29,72,0.5)]">
-            ACCÈS REFUSÉ
-          </div>
-
-          <div className="flex items-center gap-6 text-rose-400/80 bg-rose-950/40 px-6 py-3 rounded-2xl border border-rose-900/50">
-            <div className="flex items-center gap-2">
-              <DoorClosed size={18} />
-              <span>{event.doorName ?? event.reader_ ?? '—'}</span>
-            </div>
-            <div className="w-px h-4 bg-rose-800"></div>
-            <span className="font-mono text-sm">{formatTime(event.createdAt)}</span>
-          </div>
+        <div
+          className={`${
+            granted
+              ? 'bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.5)]'
+              : 'bg-rose-600 shadow-[0_0_20px_rgba(225,29,72,0.5)]'
+          } text-white px-8 py-4 rounded-full font-bold tracking-[0.1em] text-xl mb-8 w-full text-center`}
+        >
+          {granted ? 'ACCÈS ACCORDÉ' : 'ACCÈS REFUSÉ'}
         </div>
-      )}
+
+        <div
+          className={`flex items-center gap-6 ${
+            granted
+              ? 'text-emerald-400/80 bg-emerald-950/40 border-emerald-900/50'
+              : 'text-rose-400/80 bg-rose-950/40 border-rose-900/50'
+          } px-6 py-3 rounded-2xl border`}
+        >
+          <div className="flex items-center gap-2">
+            <DoorClosed size={18} />
+            <span>{event.doorName ?? event.reader_ ?? '—'}</span>
+          </div>
+          <div className={`w-px h-4 ${granted ? 'bg-emerald-800' : 'bg-rose-800'}`}></div>
+          <span className="font-mono text-sm">{formatTime(event.createdAt)}</span>
+        </div>
+      </div>
     </div>
   )
 }

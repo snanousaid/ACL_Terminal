@@ -1,0 +1,12 @@
+[Unit]
+Description=Nextronic ACL Terminal
+After=multi-user.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/nextronic/viogris/acl_terminal
+ExecStart=/home/nextronic/viogris/acl_terminal/acl_terminal.sh
+
+[Install]
+WantedBy=multi-user.target

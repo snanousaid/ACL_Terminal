@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: education_datashow
+appId: com.acl.terminal
+productName: ACL_Terminal
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: education_datashow
+  executableName: acl_terminal
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

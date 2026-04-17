@@ -1,7 +1,7 @@
 {
-  "name": "viowatch",
+  "name": "acl_terminal",
   "version": "1.0.0",
-  "description": "VioWatch — Moniteur d'accès en temps réel",
+  "description": "ACL Terminal — Borne d'accès multi-dispositifs (badge, face, fingerprint)",
   "main": "./out/main/index.js",
   "author": "example.com",
   "homepage": "https://electron-vite.org",

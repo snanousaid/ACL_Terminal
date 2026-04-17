@@ -1,34 +1,33 @@
-# restlab
+# ACL Terminal
 
-An Electron application with React and TypeScript
+Borne d'accès multi-dispositifs (Electron + React + TypeScript).
 
-## Recommended IDE Setup
+Agrège en temps réel les événements d'accès provenant de plusieurs sources :
+- **Badge** — via `ACL_Controller` (NestJS, socket.io:5000)
+- **Face ID** — via `FACE_detection` (Python Flask + socket.io:5001, stream MJPEG local)
+- **Fingerprint** *(futur)*
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+## Architecture
 
-## Project Setup
-
-### Install
-
-```bash
-$ npm install
+```
+┌────────────────────────────────────────────────────────────┐
+│  ACL_Terminal (Electron)                                   │
+│  ├─ Dashboard : stream vidéo + bandeau accès unifié        │
+│  └─ Admin (mot de passe) : Réseau | Face ID | ...          │
+└──────┬──────────────────────────────────┬──────────────────┘
+       │ WS :5000                         │ WS :5001 + HTTP :5000
+┌──────▼──────────────┐            ┌──────▼──────────────────┐
+│ ACL_Controller      │            │ FACE_detection (local)  │
+│ (badges)            │            │ (face + stream MJPEG)   │
+└─────────────────────┘            └─────────────────────────┘
 ```
 
-### Development
+## Scripts
 
 ```bash
-$ npm run dev
-```
-
-### Build
-
-```bash
-# For windows
-$ npm run build:win
-
-# For macOS
-$ npm run build:mac
-
-# For Linux
-$ npm run build:linux
+npm install
+npm run dev          # Développement
+npm run build        # Build générique
+npm run build:win    # Build Windows
+npm run build:linux  # Build Linux (cible A733)
 ```
