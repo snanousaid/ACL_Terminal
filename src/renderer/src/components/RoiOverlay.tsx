@@ -16,6 +16,12 @@ interface Props {
   paused?: boolean
   /** Intervalle de polling /status.json en ms */
   pollMs?: number
+  /**
+   * Mode d'affichage :
+   * - 'home' (défaut) : flashes granted/denied, pas de gabarit visage
+   * - 'enroll' : ajoute un ovale gabarit pour placer le visage, ignore les états granted/denied
+   */
+  mode?: 'home' | 'enroll'
 }
 
 /**
@@ -23,7 +29,11 @@ interface Props {
  * Les coins sont dessinés en SVG pour un rendu net et un glow via drop-shadow.
  * Aligné pixel-près avec le backend (mêmes pourcentages lus depuis /status.json).
  */
-export default function RoiOverlay({ paused = false, pollMs = 300 }: Props): JSX.Element | null {
+export default function RoiOverlay({
+  paused = false,
+  pollMs = 300,
+  mode = 'home',
+}: Props): JSX.Element | null {
   const [roi, setRoi] = useState<Roi | null>(null)
   const [state, setState] = useState<RoiState>('idle')
 
@@ -37,8 +47,9 @@ export default function RoiOverlay({ paused = false, pollMs = 300 }: Props): JSX
           if (cancelled) return
           if (s.roi) setRoi(s.roi)
           if (!s.face) setState('idle')
-          else if (s.access === 'granted') setState('granted')
-          else if (s.access === 'denied') setState('denied')
+          // En enrôlement : on ignore granted/denied (peu pertinent pendant l'apprentissage)
+          else if (mode === 'home' && s.access === 'granted') setState('granted')
+          else if (mode === 'home' && s.access === 'denied') setState('denied')
           else if (s.in_roi === false || s.access === 'out_of_zone') setState('out')
           else setState('in')
         })
@@ -50,7 +61,7 @@ export default function RoiOverlay({ paused = false, pollMs = 300 }: Props): JSX
       cancelled = true
       clearInterval(id)
     }
-  }, [paused, pollMs])
+  }, [paused, pollMs, mode])
 
   if (!roi || !roi.enabled) return null
 
@@ -112,6 +123,22 @@ export default function RoiOverlay({ paused = false, pollMs = 300 }: Props): JSX
             fill="none"
             strokeLinecap="round"
           />
+
+          {/* Gabarit visage (enrôlement uniquement) — ovale centré, rx=32 ry=42.
+              Pointillés cyan par défaut, plein vert quand le visage est dans le cadre. */}
+          {mode === 'enroll' && (
+            <ellipse
+              cx="50"
+              cy="50"
+              rx="32"
+              ry="42"
+              fill={state === 'in' ? 'rgba(52,211,153,0.10)' : 'none'}
+              stroke={state === 'in' ? '#34d399' : '#22d3ee'}
+              strokeWidth="1.6"
+              strokeDasharray={state === 'in' ? 'none' : '3 2.5'}
+              strokeLinecap="round"
+            />
+          )}
         </svg>
 
         {/* Ligne de scan animée — cachée sur granted/denied */}
