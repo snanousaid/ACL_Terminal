@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Wifi, ScanFace } from 'lucide-react'
+import { Wifi, ScanFace, Monitor } from 'lucide-react'
 import socket, { SERVER_URL, faceSocket, FACE_SERVER_URL } from './socket'
 import AccessCard, { AccessEvent, AccessSource } from './components/AccessCard'
 import IdleScreen from './components/IdleScreen'
@@ -325,36 +325,20 @@ function App(): JSX.Element {
         />
 
         {/* Header */}
-        <header className="flex items-center justify-between px-6 py-4 border-b border-slate-800/60 bg-slate-950/50 backdrop-blur-sm z-10">
+        <header className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-[#0d1421] shadow-md z-10">
           <div className="flex items-center gap-3">
             <div
-              className="w-3 h-3 rounded-full bg-blue-500"
-              style={{ boxShadow: '0 0 10px rgba(59,130,246,0.6)' }}
+              className="w-3 h-3 rounded-full bg-blue-500 animate-pulse"
+              style={{ boxShadow: '0 0 10px rgba(59,130,246,0.8)' }}
             />
-            <h1 className="text-xl font-bold tracking-tight">
-              <span className="text-blue-500">ACL</span>
-              <span className="text-white"> Terminal</span>
+            <h1 className="text-xl tracking-wider">
+              <span className="font-extrabold text-blue-500">ACL</span>
+              <span className="font-light text-white"> Terminal</span>
             </h1>
           </div>
-          <div className="flex items-center gap-2 text-slate-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect width="20" height="14" x="2" y="3" rx="2" />
-              <line x1="8" x2="16" y1="21" y2="21" />
-              <line x1="12" x2="12" y1="17" y2="21" />
-            </svg>
-            <span className="text-xs font-semibold tracking-[0.2em] uppercase">
-              Borne d&apos;accès
-            </span>
+          <div className="flex items-center gap-2 text-slate-400 text-xs tracking-widest uppercase">
+            <Monitor size={16} />
+            <span>Borne d&apos;accès — Entrée Principale</span>
           </div>
         </header>
 

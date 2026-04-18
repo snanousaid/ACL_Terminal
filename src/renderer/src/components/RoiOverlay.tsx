@@ -19,10 +19,9 @@ interface Props {
 }
 
 /**
- * Cadre ROI superposé au stream. Lit la région depuis /status.json (backend) et
- * change de couleur selon l'état : idle/in/out/granted/denied.
- * Le cadre est aligné au pixel près avec celui dessiné par camera_worker.py
- * car les deux utilisent les mêmes pourcentages.
+ * Cadre ROI HUD (4 coins en L + ligne de scan) superposé au stream.
+ * Les coins sont dessinés en SVG pour un rendu net et un glow via drop-shadow.
+ * Aligné pixel-près avec le backend (mêmes pourcentages lus depuis /status.json).
  */
 export default function RoiOverlay({ paused = false, pollMs = 300 }: Props): JSX.Element | null {
   const [roi, setRoi] = useState<Roi | null>(null)
@@ -55,27 +54,101 @@ export default function RoiOverlay({ paused = false, pollMs = 300 }: Props): JSX
 
   if (!roi || !roi.enabled) return null
 
-  const border = {
-    idle: 'border-cyan-300/80 shadow-[0_0_30px_rgba(103,232,249,0.35)]',
-    in: 'border-cyan-200 shadow-[0_0_30px_rgba(165,243,252,0.55)]',
-    out: 'border-slate-300/60 shadow-[0_0_20px_rgba(148,163,184,0.25)]',
-    granted: 'border-emerald-400 shadow-[0_0_40px_rgba(52,211,153,0.7)]',
-    denied: 'border-red-500 shadow-[0_0_40px_rgba(239,68,68,0.7)]',
+  const palette = {
+    idle: { color: '#22d3ee', scan: '#22d3ee' },
+    in: { color: '#a5f3fc', scan: '#a5f3fc' },
+    out: { color: '#94a3b8', scan: '#94a3b8' },
+    granted: { color: '#34d399', scan: '#34d399' },
+    denied: { color: '#ef4444', scan: '#ef4444' },
   }[state]
 
   return (
     <div className="absolute inset-0 pointer-events-none">
       <div
-        className={`absolute border-[3px] rounded-2xl transition-colors duration-300 ${border} ${
-          state === 'idle' ? 'animate-pulse' : ''
-        }`}
+        className="absolute"
         style={{
           left: `${roi.x * 100}%`,
           top: `${roi.y * 100}%`,
           width: `${roi.w * 100}%`,
           height: `${roi.h * 100}%`,
         }}
-      />
+      >
+        {/* SVG des 4 coins en L — rendu propre, glow via filter */}
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          className="absolute inset-0 w-full h-full transition-[stroke] duration-300"
+          style={{ filter: `drop-shadow(0 0 8px ${palette.color})` }}
+        >
+          {/* Coin haut-gauche */}
+          <path
+            d="M 2,18 L 2,4 Q 2,2 4,2 L 18,2"
+            stroke={palette.color}
+            strokeWidth="2.2"
+            fill="none"
+            strokeLinecap="round"
+          />
+          {/* Coin haut-droit */}
+          <path
+            d="M 82,2 L 96,2 Q 98,2 98,4 L 98,18"
+            stroke={palette.color}
+            strokeWidth="2.2"
+            fill="none"
+            strokeLinecap="round"
+          />
+          {/* Coin bas-gauche */}
+          <path
+            d="M 2,82 L 2,96 Q 2,98 4,98 L 18,98"
+            stroke={palette.color}
+            strokeWidth="2.2"
+            fill="none"
+            strokeLinecap="round"
+          />
+          {/* Coin bas-droit */}
+          <path
+            d="M 82,98 L 96,98 Q 98,98 98,96 L 98,82"
+            stroke={palette.color}
+            strokeWidth="2.2"
+            fill="none"
+            strokeLinecap="round"
+          />
+        </svg>
+
+        {/* Ligne de scan animée — cachée sur granted/denied */}
+        {state !== 'granted' && state !== 'denied' && (
+          <div
+            className="absolute left-[6%] right-[6%] h-[2px] rounded-full"
+            style={{
+              backgroundColor: palette.scan,
+              boxShadow: `0 0 12px ${palette.scan}, 0 0 4px ${palette.scan}`,
+              animation: 'roi-scan 2.8s ease-in-out infinite',
+            }}
+          />
+        )}
+
+        {/* Flash plein cadre sur granted/denied */}
+        {(state === 'granted' || state === 'denied') && (
+          <div
+            className="absolute inset-0 rounded-2xl"
+            style={{
+              backgroundColor: palette.color,
+              animation: 'roi-flash 1.4s ease-out infinite',
+            }}
+          />
+        )}
+      </div>
+
+      <style>{`
+        @keyframes roi-scan {
+          0%, 100% { top: 0%; opacity: 0; }
+          10%, 90% { opacity: 1; }
+          50% { top: calc(100% - 2px); opacity: 1; }
+        }
+        @keyframes roi-flash {
+          0%, 100% { opacity: 0.08; }
+          50% { opacity: 0.22; }
+        }
+      `}</style>
     </div>
   )
 }
