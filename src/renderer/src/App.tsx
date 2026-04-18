@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Wifi, ScanFace, Monitor } from 'lucide-react'
-import socket, { SERVER_URL, faceSocket, FACE_SERVER_URL } from './socket'
+import socket, { SERVER_URL, faceSocket, FACE_SERVER_URL, FACE_API_BASE } from './socket'
 import AccessCard, { AccessEvent, AccessSource } from './components/AccessCard'
 import IdleScreen from './components/IdleScreen'
 import StatusBar from './components/StatusBar'
@@ -91,6 +91,17 @@ function App(): JSX.Element {
       if (settingsTimerRef.current) clearTimeout(settingsTimerRef.current)
     }
   }, [])
+
+  // Pause la reconnaissance backend dès qu'une config admin est ouverte.
+  // La reprise à la fermeture (adminSection=null) ré-active détection + reco sur le home.
+  // L'enrôlement (tab "add new user") force la détection côté backend même en pause.
+  useEffect(() => {
+    const inAdmin = adminSection !== null || showPasswordModal
+    const url = inAdmin
+      ? `${FACE_API_BASE}/recognition/pause`
+      : `${FACE_API_BASE}/recognition/resume`
+    fetch(url, { method: 'POST' }).catch(() => null)
+  }, [adminSection, showPasswordModal])
 
   /* ============================================================
      SOCKET BADGE — ACL_Controller
@@ -374,12 +385,14 @@ function App(): JSX.Element {
           </div>
         )}
 
-        {/* Main area — stream coupé pendant la configuration admin */}
-        <div className="flex-1 overflow-hidden">
-          {activeEvent ? (
-            <AccessCard event={activeEvent} />
-          ) : (
-            <IdleScreen streamPaused={adminSection !== null || showPasswordModal} />
+        {/* Main area — IdleScreen toujours monté pour garder le stream actif ;
+            AccessCard s'affiche en overlay par-dessus sans couper la caméra */}
+        <div className="relative flex-1 overflow-hidden">
+          <IdleScreen streamPaused={adminSection !== null || showPasswordModal} />
+          {activeEvent && (
+            <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/55 backdrop-blur-sm animate-in fade-in duration-200">
+              <AccessCard event={activeEvent} />
+            </div>
           )}
         </div>
 
