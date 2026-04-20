@@ -19,7 +19,7 @@ interface Props {
 }
 
 /**
- * Affiche le flux MJPEG depuis FACE_detection (http://localhost:5000/video_feed).
+ * Affiche le flux MJPEG depuis FACE_detection (http://localhost:5050/video_feed).
  * Reconnexion automatique si le backend n'est pas disponible.
  * `paused` : coupe la connexion MJPEG (utile quand l'écran d'accueil est masqué).
  */

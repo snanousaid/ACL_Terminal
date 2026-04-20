@@ -15,7 +15,7 @@ Agrège en temps réel les événements d'accès provenant de plusieurs sources 
 │  ├─ Dashboard : stream vidéo + bandeau accès unifié        │
 │  └─ Admin (mot de passe) : Réseau | Face ID | ...          │
 └──────┬──────────────────────────────────┬──────────────────┘
-       │ WS :5000                         │ WS :5001 + HTTP :5000
+       │ WS :5000                         │ WS :5001 + HTTP :5050
 ┌──────▼──────────────┐            ┌──────▼──────────────────┐
 │ ACL_Controller      │            │ FACE_detection (local)  │
 │ (badges)            │            │ (face + stream MJPEG)   │
