@@ -1,5 +1,5 @@
 import { CreditCard, ScanFace, ShieldCheck } from 'lucide-react'
-import VideoStream from './VideoStream'
+import WebRTCStream from './WebRTCStream'
 import RoiOverlay from './RoiOverlay'
 
 interface IdleScreenProps {
@@ -12,7 +12,7 @@ export default function IdleScreen({ streamPaused = false }: IdleScreenProps): J
     <div className="relative flex flex-col items-center justify-center h-full w-full select-none overflow-hidden bg-black">
       {/* Stream vidéo plein écran */}
       <div className="absolute inset-0 z-0">
-        <VideoStream className="w-full h-full !rounded-none" paused={streamPaused} />
+        <WebRTCStream className="w-full h-full !rounded-none" paused={streamPaused} />
       </div>
 
       {/* Voile sombre — léger pour garder la caméra lisible */}

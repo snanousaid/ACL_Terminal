@@ -15,6 +15,9 @@ const LOG_MAX = 20
 const SHOW_LOGS = false
 const SETTINGS_ICON_DURATION = 6000
 const ADMIN_PASSWORD = '2899100*-+'
+// En dev (vite dev server) on ouvre l'admin sans prompt pour accélérer l'itération.
+// En build de prod (deployment), le mot de passe reste obligatoire.
+const REQUIRE_ADMIN_PASSWORD = import.meta.env.PROD
 
 type AdminSection = 'menu' | 'network' | 'face'
 
@@ -61,11 +64,15 @@ function App(): JSX.Element {
 
   const handleSettingsClick = (e: React.MouseEvent): void => {
     e.stopPropagation()
+    setShowSettingsIcon(false)
+    if (settingsTimerRef.current) clearTimeout(settingsTimerRef.current)
+    if (!REQUIRE_ADMIN_PASSWORD) {
+      setAdminSection('menu')
+      return
+    }
     setPassword('')
     setPasswordError(false)
     setShowPasswordModal(true)
-    setShowSettingsIcon(false)
-    if (settingsTimerRef.current) clearTimeout(settingsTimerRef.current)
   }
 
   const handlePasswordSubmit = (): void => {

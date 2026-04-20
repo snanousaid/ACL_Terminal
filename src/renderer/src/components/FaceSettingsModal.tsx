@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ScanFace, Users, Plus, Trash2, Power, RefreshCw, X, Check, AlertCircle } from 'lucide-react'
 import { FACE_API_BASE } from '../socket'
-import VideoStream from './VideoStream'
+import WebRTCStream from './WebRTCStream'
 import RoiOverlay from './RoiOverlay'
 import KbInput from './KbInput'
 
@@ -384,7 +384,7 @@ function EnrollTab({ onDone }: { onDone: () => void }): JSX.Element {
 
           {/* Stream live — l'utilisateur se voit */}
           <div className="relative">
-            <VideoStream className="w-full aspect-[4/3] border border-slate-700" />
+            <WebRTCStream className="w-full aspect-[4/3] border border-slate-700" />
             <RoiOverlay mode="enroll" />
             {/* Hint pose courante sur le stream */}
             <div className="absolute left-3 bottom-3 right-3 flex items-center justify-between gap-2">
